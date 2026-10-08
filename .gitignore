@@ -1,0 +1,11 @@
+.vscode/
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+*.log
+*.pdf
+.env
+.env/
+financial_tracking_example.pdf
+example_financial_tracking.py
