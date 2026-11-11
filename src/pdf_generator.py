@@ -15,13 +15,17 @@ class PDFGenerator(FPDF):
         return self._periodo
 
     def header(self):
-        if hasattr(self, "document_title", "periodo"):
-            title = self.document_title()
-            periodo = self.periodo()
+        title = self.document_title()
+        periodo = self.periodo()
 
         if title:
             self.set_font("Arial", "B", 20)
             self.cell(0, 10, title, 0, 1, align="C")
+
+        if periodo:
+            self.set_font("Arial", "", 12)
+            self.cell(0, 10, periodo, align="C")
+     
 
     def footer(self):
         self.set_y(-15)
@@ -44,7 +48,7 @@ class PDFGenerator(FPDF):
         if image_path:
           self.image(image_path, x=0, y=0, w=self.w, h=self.h)
 
-        for page in pages:
+        for page in range(pages):
             title, body, font, size = page
             self.page_title(title, font, size)
             self.page_body(body, font, size)
