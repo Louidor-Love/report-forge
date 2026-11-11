@@ -38,33 +38,50 @@ class PDFGenerator(FPDF):
         self.multi_cell(0, 10, body_text)
         self.ln(10)
 
-    def create_pdf(self, filename: str, documente_title: str, pages, image_path = None):
-        pdf = PDFGenerator(documente_title)
-        pdf._document_title = documente_title
-        pdf.add_page()
+    def create_pdf(self, filename: str, pages: list, image_path: str = None):
+        self.add_page()
+
         if image_path:
-            pdf.image(image_path, x=0, y=0, w=pdf.w, h=pdf.h)
+          self.image(image_path, x=0, y=0, w=self.w, h=self.h)
 
         for page in pages:
-            title, body, font, size   = page
-            pdf.page_title(title, font, size)
-            pdf.page_body (body, font, size)
+            title, body, font, size = page
+            self.page_title(title, font, size)
+            self.page_body(body, font, size)
 
-        pdf.output(filename)
+        self.output(filename)
+
 
 def main():
-    st.title ("Generador de PDF ")
+    st.title("Generador de PDF")
+
     st.header(body="Configuración del PDF", anchor="config-pdf", help="Configura las opciones del documento", icon="📄", divider=True, width="stretch")
-    pages = []
-    pages_count = st.number_input("cantidad de paginas",min_value=1, max_value=10,value=1)
-    st.text_input("Titulo Del Documento","Escribe el titulo..")
-    st.file_uploader("sube una imagen para el documento",type = ["jpg", "png"])
+
+    pages_count = st.number_input("Cantidad de páginas", min_value=1, max_value=10, value=1)
+
+    document_title = st.text_input("Título del documento", placeholder="Escribe el título...")
+
+    upload_image = st.file_uploader("Sube una imagen para el documento", type=["jpg", "png"])
+
     col1, col2 = st.columns(2)
     month = col1.selectbox("Mes", ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"])
     year = col2.selectbox("Año", list(range(2015, 2061)))
+
+    periodo = f"{month} {year}"
+
     if st.button("Generar PDF"):
         st.write("Generando reporte...")
-    
+
+        image_path = None
+
+        if upload_image:
+            image_path = upload_image.name
+            with open(image_path, "wb") as f:
+                f.write(upload_image.getbuffer())
+
+        pdf = PDFGenerator(document_title, periodo)
+
+        pdf.create_pdf(filename="reporte.pdf", pages=pages_count, image_path=image_path)
 
 if __name__ == "__main__":
     main()
