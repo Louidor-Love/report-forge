@@ -9,3 +9,7 @@ __pycache__/
 .env/
 financial_tracking_example.pdf
 example_financial_tracking.py
+.agents
+.agents/
+.vscode
+.vscode/
